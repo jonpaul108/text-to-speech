@@ -1,7 +1,46 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+import axios from 'axios';
+import styles from './css/app.css';
+
 
 const App = () => {
-    return <div>dThis is the new world</div>
+    const [text, setText] = useState(
+        [{text: 'Hello world. How are you?', sound: null}]
+    );
+
+    const postString = useEffect(() => {
+       axios.post(`audioData`, {
+           data: 'Hello. I\'m here to retrieve data.',
+       }) 
+       .then((response) => {
+           console.log('in response: ', response);
+            const newText = [...text];
+            newText.push(response.data);
+            setText(newText)
+            console.log('updated state: ', text);
+         })
+         .catch((err) => {
+             console.log('There was a problem: ', err);
+         })
+    })
+    
+    const myAudio = useRef();
+    console.log('myAudio', myAudio);
+    const playAudio = (ref) => {
+        if (myAudio.current !== null) {
+            myAudio.current.play();
+        }
+    }
+
+    return <div className={styles.app}>{
+        text.map((el) => {
+            return (
+            <div>
+                <audio type='audio' controls ref={myAudio} src={el.sound} onClick={() => {playAudio()}}/>
+                <div>{el.text}</div>
+             </div>
+            )
+    })}</div>
 }
 
 export default App;
