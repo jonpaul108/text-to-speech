@@ -10,12 +10,16 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 // app.use(bodyParser.json())
 const parser = bodyParser.json();
 
-app.get('/home', (req, res) => res.status(200).send('Hello World'));
+const tempData = [{text: 'Hello world. How are you?', sound: null}];
+
+app.get('/home', (req, res) => {
+    res.status(200).send(tempData)
+});
 
 app.post(`/audioData`, parser, (req, res) => {
     console.log('audio data tested: ', req.body);
     const data = ({text: req.body.data, sound: null });
-    res.send(JSON.stringify(data));
+    res.status(201).send(JSON.stringify(data));
 
 })
 

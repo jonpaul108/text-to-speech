@@ -1,28 +1,46 @@
 import React, {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import styles from './css/app.css';
+import {postData, fetchData, getData} from './utils/fetch';
 
 
 const App = () => {
-    const [text, setText] = useState(
-        [{text: 'Hello world. How are you?', sound: null}]
-    );
+    const [text, setText] = useState([])
 
-    const postString = useEffect(() => {
-       axios.post(`audioData`, {
-           data: 'Hello. I\'m here to retrieve data.',
-       }) 
-       .then((response) => {
-           console.log('in response: ', response);
-            const newText = [...text];
-            newText.push(response.data);
-            setText(newText)
-            console.log('updated state: ', text);
-         })
-         .catch((err) => {
-             console.log('There was a problem: ', err);
-         })
-    })
+    const getData = async function () {
+        let newData = [];
+        await axios.get('/home')
+            .then((res) => {
+                newData = [...res.data];
+                console.log('made call for get Data', newData);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+            setText(newData);
+        };
+
+    useEffect(() => {
+          getData();  
+    }, []);
+
+
+
+    // const postString = useEffect(() => {
+    //    axios.post(`audioData`, {
+    //        data: 'Hello. I\'m here to retrieve data.',
+    //    }) 
+    //    .then((response) => {
+    //        console.log('in response: ', response);
+    //         const newText = [...text];
+    //         newText.push(response.data);
+    //         setText(newText)
+    //         console.log('updated state: ', text);
+    //      })
+    //      .catch((err) => {
+    //          console.log('There was a problem: ', err);
+    //      })
+    // })
     
     const myAudio = useRef();
     console.log('myAudio', myAudio);
